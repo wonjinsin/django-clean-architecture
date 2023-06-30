@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
-from util.logger import l
+from util.logger import logger
 from django.http import HttpResponse
 
 # Serializers define the API representation.
@@ -43,8 +43,8 @@ router.register(r'users', UserViewSet)
 
 
 def foo(request):
-    logger = l
-    logger.warning('foo', 'bar')
+    print(type(request))
+    logger.info('foo', test='is test message')
     return HttpResponse("Hello World", content_type="text/plain")
 
 
