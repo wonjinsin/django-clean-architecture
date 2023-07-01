@@ -1,4 +1,5 @@
 import logging
+import logging.config
 import inspect
 import re
 from django.conf import settings
@@ -6,12 +7,30 @@ from django.conf import settings
 
 class Logger():
     def __init__(self):
-        logging.basicConfig(
-            format='{"l":"%(levelname)s","t":"%(asctime)s",%(message)s}',
-            level=logging.DEBUG,
-            datefmt='%Y/%m/%d %H:%I:%S%z',
-            encoding='utf-8'
-        )
+        config = {
+            'version': 1,
+            'formatters': {
+                'standard': {
+                    'class': 'logging.Formatter',
+                    'format': '{"l":"%(levelname)s","t":"%(asctime)s",%(message)s}',
+                    'datefmt': '%Y/%m/%d %H:%I:%S%z',
+                },
+            },
+            'handlers': {
+                'app': {
+                    'class': 'logging.StreamHandler',
+                    'formatter': 'standard',
+                },
+            },
+            'loggers': {
+                'root': {
+                    'handlers': ['app'],
+                    'level': 'DEBUG',
+                    'propagate': True,
+                },
+            },
+        }
+        logging.config.dictConfig(config)
 
     def _getPrevFile(self) -> dict[str, str]:
         previous_frame = inspect.currentframe().f_back.f_back.f_back
@@ -31,17 +50,20 @@ class Logger():
         fmtMsg += f'"caller":"{prev["file"]}:{prev["line"]}"'
         return fmtMsg
 
+    def __getRoot(self) -> logging.Logger:
+        return logging.getLogger()
+
     def info(self, msg: str, **kwargs) -> None:
-        logging.info(self.__getFmtMsg(msg, **kwargs))
+        self.__getRoot().info(self.__getFmtMsg(msg, **kwargs))
 
     def warning(self, msg: str, **kwargs) -> None:
-        logging.warning(self.__getFmtMsg(msg, **kwargs))
+        self.__getRoot().warning(self.__getFmtMsg(msg, **kwargs))
 
     def error(self, msg: str, **kwargs) -> None:
-        logging.error(self.__getFmtMsg(msg, **kwargs))
+        self.__getRoot().error(self.__getFmtMsg(msg, **kwargs))
 
     def debug(self, msg: str, **kwargs) -> None:
-        logging.warning(self.__getFmtMsg(msg, **kwargs))
+        self.__getRoot().warning(self.__getFmtMsg(msg, **kwargs))
 
 
 logger = Logger()

@@ -43,7 +43,7 @@ router.register(r'users', UserViewSet)
 
 
 def foo(request):
-    print(type(request))
+    print(request.trid)
     logger.info('foo', test='is test message')
     return HttpResponse("Hello World", content_type="text/plain")
 
