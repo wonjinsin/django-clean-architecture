@@ -3,6 +3,7 @@ import logging.config
 import inspect
 import re
 from django.conf import settings
+from middleware.context import var
 
 
 class Logger():

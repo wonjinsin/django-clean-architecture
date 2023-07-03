@@ -20,6 +20,7 @@ from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 from util.logger import logger
 from django.http import HttpResponse
+from middleware.context import var
 
 # Serializers define the API representation.
 
@@ -43,6 +44,7 @@ router.register(r'users', UserViewSet)
 
 
 def foo(request):
+    print(var)
     logger.info('foo', test='is test message')
     return HttpResponse("Hello World", content_type="text/plain")
 
