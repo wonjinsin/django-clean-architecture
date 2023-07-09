@@ -1,5 +1,5 @@
 from django.urls import path, include
 
 urlpatterns = [
-    path('user', include('router.v1.user')),
+    path('user/', include('router.v1.user')),
 ]
