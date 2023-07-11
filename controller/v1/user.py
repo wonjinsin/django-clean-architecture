@@ -1,18 +1,17 @@
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework.decorators import action, permission_classes
-
-from util.logger import logger
-from django.contrib.auth.models import User
+from service.user import UserService
 from django.http import HttpResponse, JsonResponse
-from rest_framework.serializers import HyperlinkedModelSerializer
-from util.permission import ReadOnly
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated
+from util.logger import logger
+from util.permission import ReadOnly
 
 
 class User(ModelViewSet):
+    user_service = UserService()
+
     def list(self, request):
+        logger.info('[Request]')
+        self.permission_classes = [ReadOnly]
+        self.user_service.get_list()
         return HttpResponse("return list")
 
     def create(self, request):
