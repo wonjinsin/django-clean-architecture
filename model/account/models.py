@@ -1,48 +1,44 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from django.utils.timezone import now
+from util.logger import logger
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, username, email, password, fullname, is_staff):
+    def create_user(self, email, password, name):
+        logger.info('create_user')
         user = self.model(
             email=email,
-            username=username,
-            fullname=fullname,
-            is_staff=is_staff,
+            name=name,
         )
         user.set_password(password)
-        user.save(using=self._db)
+        user.save()
         return user
 
-    def create_superuser(self, username, email, password, fullname, is_admin, is_staff):
+    def create_superuser(self, email, password, name):
         user = self.model(
             email=email,
-            username=username,
-            fullname=fullname,
-            is_admin=is_admin,
-            is_staff=is_staff,
+            name=name,
         )
         user.set_password(password)
-        user.is_admin = True
         user.is_staff = True
+        user.is_admin = True
         user.is_superuser = True
-        user.save(using=self._db)
+        user.save()
         return user
 
 
 class Account(AbstractBaseUser, PermissionsMixin):
-    username = models.CharField('name', max_length=20, default=None)
-    password = models.CharField('비밀번호', max_length=128, default=None)
-    email = models.EmailField('이메일 주소', max_length=50,
-                              unique=True, default=None)
-    fullname = models.CharField('이름', max_length=20, default=None)
-    join_date = models.DateTimeField('가입일', auto_now=True)
-    is_staff = models.BooleanField('스태프', default=True)
-    is_admin = models.BooleanField('어드민', default=True)
+    email = models.EmailField('email', max_length=50,
+                              unique=True, null=False, default=None)
+    password = models.CharField(
+        'password', max_length=128, null=False)
+    name = models.CharField('name', max_length=20, null=False, default=None)
+    created_at = models.DateTimeField('created_at', auto_now=True)
+    is_staff = models.BooleanField('is_staff', default=False)
+    active = models.BooleanField('active', default=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', 'fullname', 'is_staff', 'is_admin']
+    REQUIRED_FIELDS = ['name']
 
     objects = AccountManager()
 
@@ -50,3 +46,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
         db_table = "account"
         verbose_name = 'account'
         verbose_name_plural = 'accounts'
+
+    def __str__(self):
+        return self.email
