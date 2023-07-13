@@ -3,6 +3,7 @@ import logging.config
 import inspect
 import re
 from django.conf import settings
+from typing import Any
 
 
 class Logger():
@@ -47,8 +48,11 @@ class Logger():
             'line': previous_frame.f_lineno,
         }
 
-    def __getFmtMsg(self, msg: str, **kwargs) -> str:
-        fmtMsg = f'"msg":"{msg}"'
+    def __getFmtMsg(self, msg: str, **kwargs: dict[str, Any]) -> str:
+        fmtMsg = ''
+        if msg != '':
+            fmtMsg = f'"msg":"{msg}"'
+
         for key, val in kwargs.items():
             fmtMsg += f',"{key}":"{val}"'
 
@@ -59,7 +63,7 @@ class Logger():
     def __getRoot(self) -> logging.Logger:
         return logging.getLogger()
 
-    def info(self, msg: str, **kwargs) -> None:
+    def info(self, msg: str, **kwargs: dict[str, Any]) -> None:
         self.__getRoot().info(self.__getFmtMsg(msg, **kwargs))
 
     def warning(self, msg: str, **kwargs) -> None:

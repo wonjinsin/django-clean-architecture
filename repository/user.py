@@ -1,3 +1,6 @@
+from model.account.models import Account
+
+
 class UserRepository:
     def get_list(self):
-        print('get list')
+        return Account.objects.all()

@@ -5,10 +5,10 @@ from django.contrib.auth.admin import UserAdmin
 
 @admin.register(Account)
 class AccountAdmin(UserAdmin):
-    list_display = ('email', 'is_staff', 'active',)
-    list_filter = ('email', 'is_staff', 'active',)
+    list_display = ('id', 'email', 'is_staff', 'active',)
+    list_filter = ('id', 'email', 'is_staff', 'active',)
     fieldsets = (
-        (None, {'fields': ('email', 'name', 'password')}),
+        (None, {'fields': ('id', 'email', 'name', 'password')}),
         ('Permissions', {
          'fields': ('is_staff', 'groups', 'user_permissions')}),
     )
@@ -19,4 +19,4 @@ class AccountAdmin(UserAdmin):
          ),
     )
     search_fields = ('email',)
-    ordering = ('email',)
+    ordering = ('id',)
