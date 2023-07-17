@@ -39,16 +39,25 @@ class Logger():
         }
         logging.config.dictConfig(config)
 
-    def _getPrev(self) -> dict[str, str]:
-        previous_frame = inspect.currentframe().f_back.f_back.f_back
+    def _getPrev(self) -> dict[str, str | int]:
+        frame = inspect.currentframe()
+        if frame != None and frame.f_back != None and frame.f_back.f_back != None and frame.f_back.f_back.f_back != None:
+            frame = frame.f_back.f_back.f_back
+        
+        if frame == None:
+            return {
+                'file': 'UnKnonw',
+                'line': 'UnKnonwn',
+            }
+        
         file = re.sub(rf'^{settings.BASE_DIR}/', '',
-                      previous_frame.f_code.co_filename)
+                      frame.f_code.co_filename)
         return {
             'file': file,
-            'line': previous_frame.f_lineno,
+            'line': frame.f_lineno,
         }
 
-    def __getFmtMsg(self, msg: str, **kwargs: dict[str, Any]) -> str:
+    def __getFmtMsg(self, msg: str, **kwargs) -> str:
         fmtMsg = ''
         if msg != '':
             fmtMsg = f'"msg":"{msg}"'
@@ -63,7 +72,7 @@ class Logger():
     def __getRoot(self) -> logging.Logger:
         return logging.getLogger()
 
-    def info(self, msg: str, **kwargs: dict[str, Any]) -> None:
+    def info(self, msg: str, **kwargs) -> None:
         self.__getRoot().info(self.__getFmtMsg(msg, **kwargs))
 
     def warning(self, msg: str, **kwargs) -> None:

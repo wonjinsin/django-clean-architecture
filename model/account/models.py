@@ -4,7 +4,7 @@ from util.logger import logger
 
 
 class AccountManager(BaseUserManager):
-    def create_user(self, email, password, name):
+    def create_user(self, email = str, password = str, name = str) -> BaseUserManager:
         logger.info('create_user')
         user = self.model(
             email=email,
@@ -14,7 +14,7 @@ class AccountManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, email, password, name):
+    def create_superuser(self, email = str, password = str, name = str) -> BaseUserManager:
         user = self.model(
             email=email,
             name=name,
@@ -47,5 +47,5 @@ class Account(AbstractBaseUser, PermissionsMixin):
         verbose_name = 'account'
         verbose_name_plural = 'accounts'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.email

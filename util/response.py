@@ -3,7 +3,8 @@ from rest_framework.utils.serializer_helpers import ReturnDict
 from middleware.context import ContextMiddleware
 
 
-def response(code: int, msg: str, data: ReturnDict | None, custom_code: str | None = None) -> JsonResponse:
+def response(code: int, msg: str, data: ReturnDict | dict | None = None, custom_code: str | None = None) -> JsonResponse:
+    print(type(data))
     res = {
         'trid': ContextMiddleware.get_trid(),
         'code': to_response_code(code),
@@ -17,4 +18,4 @@ def response(code: int, msg: str, data: ReturnDict | None, custom_code: str | No
 
 
 def to_response_code(code: int) -> str:
-    return f'0{code}'
+    return f'{code:04}'

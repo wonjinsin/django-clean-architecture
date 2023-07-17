@@ -6,7 +6,6 @@ from util.logger import logger
 from util.response import response
 from util.permission import ReadOnly
 from rest_framework.request import Request
-from rest_framework.response import Response
 from rest_framework import status
 from django.http import JsonResponse
 
@@ -18,20 +17,20 @@ class User(ViewSet):
         logger.info('[Request]')
         self.permission_classes = [ReadOnly]
         users = self.user_service.get_list()
-        user_list = AccountSerializer(users, many=True)
-        return response(status.HTTP_200_OK, 'Get Userlist OK', user_list.data)
+        serialized_users = AccountSerializer(users, many=True)
+        return response(status.HTTP_200_OK, 'Get Userlist OK', serialized_users)
 
-    def create(self, request):
+    def create(self, request: Request):
         return HttpResponse('return create')
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request: Request, pk: int):
         return HttpResponse('return retrieve')
 
-    def update(self, request, pk=None):
+    def update(self, request: Request, pk: int):
         return HttpResponse('return retriev')
 
-    def partial_update(self, request, pk=None):
+    def partial_update(self, request: Request, pk: int):
         return HttpResponse('return partial_update')
 
-    def destroy(self, request, pk=None):
+    def destroy(self, request: Request, pk: int):
         return HttpResponse('return destroy')
